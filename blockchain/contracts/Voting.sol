@@ -14,7 +14,8 @@ contract Voting is ERC1155, ERC1155Supply, Ownable, ERC1155Burnable {
 
     event NewElectionCreate(uint256 votingId, uint256 electionId, string description);
     event NewCandidateRegistered(uint256 votingId, string emailId);
-
+    event VotingEnabled(uint256 votingId, electionStage stage);
+    event VotingDisabled(uint256 votingId, electionStage stage);
     event VotingStageChange(uint256 votingId, electionStage stage);
     event VotingTokenTransfered(uint256 votingId, uint256 electionId);
     event Voted(uint256 votingId, address candidateAddress);
@@ -47,7 +48,7 @@ contract Voting is ERC1155, ERC1155Supply, Ownable, ERC1155Burnable {
         emit NewElectionCreate(_votingId, _tokenId, _description);
     }
 
-    function registerCandidate(string memory _name, string memory _emailId, address _candidateAddress, uint256 _votingId) public {
+    function registerCandidate(string memory _name, string memory _emailId, address _candidateAddress, uint256 _votingId) public onlyOwner {
         require(_candidateAddress != address(0), 'address zero is not allowed');
         require(votingDetails[_votingId].stage == electionStage.Declared,"Election not in declared stage.");
         votingDetails[_votingId].candidates.push(_candidateAddress);
@@ -61,6 +62,15 @@ contract Voting is ERC1155, ERC1155Supply, Ownable, ERC1155Burnable {
         emit VotingStageChange(_votingId, votingDetails[_votingId].stage);
     }
 
+    function disableVoting(uint256 _votingId) public onlyOwner {
+        votingDetails[_votingId].stage = electionStage.Closed;
+        emit VotingDisabled(_votingId, votingDetails[_votingId].stage);
+    }
+
+    function enableVoting(uint256 _votingId) public onlyOwner {
+        votingDetails[_votingId].stage = electionStage.Active;
+        emit VotingEnabled(_votingId, votingDetails[_votingId].stage);
+    }
 
     function requestVotingToken(string memory _emailId, address _to, uint256 _votingId) public {
         require(votingDetails[_votingId].stage == electionStage.Active, 'Voting is not open yet');
@@ -79,6 +89,16 @@ contract Voting is ERC1155, ERC1155Supply, Ownable, ERC1155Burnable {
         return votingDetails[_votingId].electionId;
     }
 
+    function isTokenDistributed(uint256 _votingId, string memory _emailId) public view returns (bool){
+        uint256[] memory ids = tokenDistributedToVoters[_emailId];
+        bool status = false;
+        for(uint i=0; i< ids.length; i++){
+            if(ids[i] == _votingId){
+                status = true;
+            }
+        }
+        return status;
+    }
 
     function isCandidateValid(uint256 _votingId, address _candidateAddress) public view returns (bool){
         for(uint i=0; i< votingDetails[_votingId].candidates.length; i++){
@@ -112,4 +132,7 @@ contract Voting is ERC1155, ERC1155Supply, Ownable, ERC1155Burnable {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
+    function declareResult(uint256 _votingId) public {
+        votingDetails[_votingId].stage = electionStage.Results;
+    }
 }
