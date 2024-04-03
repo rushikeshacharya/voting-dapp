@@ -1,4 +1,4 @@
-# voting-dapp
+# Voting DApp
 Final Project Submission for Alchemy Ethereum Dev. Bootcamp
 
 ## Abstract 
