@@ -41,3 +41,33 @@ This system simplifies the voting process, ensures transparency, and provides a 
 * **Closing Voting**: Once the voting period ends, no further votes can be cast.
 * **Determining the Winner**: The candidate with the highest number of ERC20 tokens for a specific election ID is declared the winner.
 * **Winner Confirmation**: The Admin then transfers the ERC721 token (Election Token) to the winning candidate.
+
+## Technologies Used
+
+### Frontend
+
+- [React.js](https://reactjs.org/)
+- [React Bootstrap](https://react-bootstrap.github.io/)
+
+### Backend
+
+- [Node.js](https://nodejs.org/)
+- [Express.js](https://expressjs.com/)
+
+### Database
+
+- [MongoDB](https://www.mongodb.com/)
+
+### Smart Contract Development
+
+- [Hardhat](https://hardhat.org/)
+- [Solidity](https://soliditylang.org/)
+
+### Testing
+
+- [Mocha](https://mochajs.org/)
+- [Chai](https://www.chaijs.com/)
+
+### Other Tools
+
+- [Metamask](https://metamask.io/)
